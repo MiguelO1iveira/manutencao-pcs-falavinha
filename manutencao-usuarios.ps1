@@ -94,7 +94,7 @@ function Limpar-Windows {
     wh "| [4/9] REPARANDO COMPONENTES DO WINDOWS                   |" 
     wh "+----------------------------------------------------------+" 
 
-    # Dism /Online /Cleanup-Image /StartComponentCleanup
+    Dism /Online /Cleanup-Image /StartComponentCleanup
 
     wh "  [OK] Etapa concluida." -ForegroundColor Green
 }
@@ -107,9 +107,9 @@ function Reparar-Windows {
     wh "| [5/9] REPARANDO ARQUIVOS DO SISTEMA                      |" 
     wh "+----------------------------------------------------------+" 
 
-    # Dism /Online /Cleanup-Image /RestoreHealth
+    Dism /Online /Cleanup-Image /RestoreHealth
 
-    # sfc /scannow
+    sfc /scannow
 
     wh "  [OK] Verificacao do sistema concluida." -ForegroundColor Green
 }
@@ -148,7 +148,7 @@ function Otimizar-Disco {
     wh "| [8/9] OTIMIZANDO O DISCO                                 |" 
     wh "+----------------------------------------------------------+" 
 
-    # Optimize-Volume -DriveLetter C
+    Optimize-Volume -DriveLetter C
 
     wh "  [OK] Otimizacao do disco concluida." -ForegroundColor Green
 }
@@ -176,7 +176,6 @@ function Manutencao-Completa {
     Reparar-Windows
     Manutencao-Rede
     Reiniciar-Spooler
-    # Atualizar-Windows
     Otimizar-Disco
     Limpar-ArquivosLogs
 }
