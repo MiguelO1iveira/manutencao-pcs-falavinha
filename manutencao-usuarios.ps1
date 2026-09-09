@@ -11,7 +11,7 @@ function Limpar-ArquivosTemporarios {
 
     wh ""
     wh "+----------------------------------------------------------+" 
-    wh "| [1/9] LIMPEZA DE ARQUIVOS TEMPORARIOS                    |" 
+    wh "| [1/10] LIMPEZA DE ARQUIVOS TEMPORARIOS                    |" 
     wh "+----------------------------------------------------------+" 
 
     Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
@@ -25,7 +25,7 @@ function Limpar-Lixeira {
 
     wh ""
     wh "+----------------------------------------------------------+" 
-    wh "| [2/9] LIMPEZA DA LIXEIRA                                 |" 
+    wh "| [2/10] LIMPEZA DA LIXEIRA                                 |" 
     wh "+----------------------------------------------------------+" 
 
     Clear-RecycleBin -Force -ErrorAction SilentlyContinue
@@ -38,7 +38,7 @@ function Limpar-CacheNavegadores {
 
     wh ""
     wh "+----------------------------------------------------------+" 
-    wh "| [3/9] LIMPEZA DE CACHE DOS NAVEGADORES                   |" 
+    wh "| [3/10] LIMPEZA DE CACHE DOS NAVEGADORES                   |" 
     wh "+----------------------------------------------------------+" 
 
     $browsers = @("chrome", "firefox", "edge")
@@ -91,7 +91,7 @@ function Limpar-Windows {
 
     wh ""
     wh "+----------------------------------------------------------+" 
-    wh "| [4/9] REPARANDO COMPONENTES DO WINDOWS                   |" 
+    wh "| [4/10] REPARANDO COMPONENTES DO WINDOWS                   |" 
     wh "+----------------------------------------------------------+" 
 
     Dism /Online /Cleanup-Image /StartComponentCleanup
@@ -104,7 +104,7 @@ function Reparar-Windows {
 
     wh ""
     wh "+----------------------------------------------------------+" 
-    wh "| [5/9] REPARANDO ARQUIVOS DO SISTEMA                      |" 
+    wh "| [5/10] REPARANDO ARQUIVOS DO SISTEMA                      |" 
     wh "+----------------------------------------------------------+" 
 
     Dism /Online /Cleanup-Image /RestoreHealth
@@ -119,7 +119,7 @@ function Manutencao-Rede {
 
     wh ""
     wh "+----------------------------------------------------------+" 
-    wh "| [6/9] VERIFICANDO E REPARANDO A REDE                     |" 
+    wh "| [6/10] VERIFICANDO E REPARANDO A REDE                     |" 
     wh "+----------------------------------------------------------+" 
 
     ipconfig /flushdns
@@ -132,7 +132,7 @@ function Reiniciar-Spooler {
 
     wh ""
     wh "+----------------------------------------------------------+" 
-    wh "| [7/9] REINICIANDO SERVICO DE IMPRESSAO                   |" 
+    wh "| [7/10] REINICIANDO SERVICO DE IMPRESSAO                   |" 
     wh "+----------------------------------------------------------+" 
 
     Restart-Service -Name "Spooler" -Force
@@ -145,7 +145,7 @@ function Otimizar-Disco {
 
     wh ""
     wh "+----------------------------------------------------------+" 
-    wh "| [8/9] OTIMIZANDO O DISCO                                 |" 
+    wh "| [8/10] OTIMIZANDO O DISCO                                 |" 
     wh "+----------------------------------------------------------+" 
 
     Optimize-Volume -DriveLetter C
@@ -158,10 +158,37 @@ function Limpar-ArquivosLogs {
 
     wh ""
     wh "+----------------------------------------------------------+" 
-    wh "| [9/9] LIMPEZA DE ARQUIVOS DE LOG                         |" 
+    wh "| [9/10] LIMPEZA DE ARQUIVOS DE LOG                         |" 
     wh "+----------------------------------------------------------+" 
 
     Remove-Item -Path "$env:SystemRoot\Logs\*" -Recurse -Force -ErrorAction SilentlyContinue
+
+    wh "  [OK] Arquivos de log limpos." -ForegroundColor Green
+}
+
+function Desativar_Servicos {
+    wh ""
+    wh "+----------------------------------------------------------+"
+    wh "| [10/10] DESATIVANDO SERVICOS DESNECESSARIOS               |"
+    wh "+----------------------------------------------------------+"
+
+        $servicos = @(
+            "XboxGipSvc",
+            "XblAuthManager",
+            "XblGameSave",
+            "XboxNetApiSvc",
+            "Fax",
+            "RetailDemo",
+            "MapsBroker",
+            "WMPNetworkSvc",
+            "wisvc"
+
+        )
+
+    foreach ($servico in $servicos) {
+        Stop-Service -Name $servico -Force
+        Set-Service -Name $servico -StartupType Disabled
+    }
 
     wh "  [OK] Arquivos de log limpos." -ForegroundColor Green
 }
@@ -178,13 +205,12 @@ function Manutencao-Completa {
     Reiniciar-Spooler
     Otimizar-Disco
     Limpar-ArquivosLogs
+    Desativar_Servicos
 }
 
 
 
-# ============================================================
-#                       FUNCAO PRINCIPAL
-# ============================================================
+# Função principal do script
 
 function Main {
 
@@ -235,11 +261,6 @@ function Main {
 }
 
 
-
-# ============================================================
-#                VERIFICACAO DE ADMINISTRADOR
-# ============================================================
-
 # Verifica se o PowerShell esta sendo executado como Administrador
 
 $principal = New-Object Security.Principal.WindowsPrincipal(
@@ -262,8 +283,6 @@ if (-not $principal.IsInRole(
 }
 
 
-# ============================================================
-#                    EXECUTANDO SCRIPT
-# ============================================================
 
+# Executando o script
 Main
